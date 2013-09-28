@@ -982,6 +982,7 @@
 		C8B208F617F6BF6600F56DB4 /* HockeyHero */ = {
 			isa = PBXGroup;
 			children = (
+				C8B20CCC17F7190300F56DB4 /* Document */,
 				C8B208F717F6BF6600F56DB4 /* Resources */,
 				C8B2090F17F6BF6600F56DB4 /* ios */,
 				C8B2091817F6BF6600F56DB4 /* libs */,
@@ -994,6 +995,7 @@
 		C8B208F717F6BF6600F56DB4 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C8B20CCD17F7190A00F56DB4 /* sd */,
 				C8B208F817F6BF6600F56DB4 /* CloseNormal.png */,
 				C8B208FA17F6BF6600F56DB4 /* CloseSelected.png */,
 				C8B208FC17F6BF6600F56DB4 /* Default.png */,
@@ -2192,12 +2194,54 @@
 		C8B20CB917F6BF6B00F56DB4 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				C8B20CD017F7192100F56DB4 /* layers */,
+				C8B20CCF17F7191A00F56DB4 /* utils */,
+				C8B20CCE17F7190E00F56DB4 /* sprites */,
 				C8B20CBA17F6BF6B00F56DB4 /* AppDelegate.h */,
 				C8B20CBB17F6BF6B00F56DB4 /* AppDelegate.cpp */,
 				C8B20CBD17F6BF6B00F56DB4 /* HelloWorldScene.h */,
 				C8B20CBE17F6BF6B00F56DB4 /* HelloWorldScene.cpp */,
 			);
 			name = Classes;
+			sourceTree = "<group>";
+		};
+		C8B20CCC17F7190300F56DB4 /* Document */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Document;
+			sourceTree = "<group>";
+		};
+		C8B20CCD17F7190A00F56DB4 /* sd */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = sd;
+			path = Resources/sd;
+			sourceTree = "<group>";
+		};
+		C8B20CCE17F7190E00F56DB4 /* sprites */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = sprites;
+			path = Classes/sprites;
+			sourceTree = "<group>";
+		};
+		C8B20CCF17F7191A00F56DB4 /* utils */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = utils;
+			path = Classes/utils;
+			sourceTree = "<group>";
+		};
+		C8B20CD017F7192100F56DB4 /* layers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = layers;
+			path = Classes/layers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2686,6 +2730,7 @@
 				C8B20CC617F6BF6B00F56DB4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
