@@ -328,6 +328,11 @@
 		C8B20D1A17F71CB200F56DB4 /* BallSprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8B20D1317F71CB200F56DB4 /* BallSprite.cpp */; };
 		C8B20D1B17F71CB200F56DB4 /* BaseSprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8B20D1517F71CB200F56DB4 /* BaseSprite.cpp */; };
 		C8B20D1C17F71CB200F56DB4 /* PlayerSprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8B20D1717F71CB200F56DB4 /* PlayerSprite.cpp */; };
+		C8B20D2217F7206000F56DB4 /* attack_ready.wav in Resources */ = {isa = PBXBuildFile; fileRef = C8B20D1D17F7206000F56DB4 /* attack_ready.wav */; };
+		C8B20D2317F7206000F56DB4 /* background.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C8B20D1E17F7206000F56DB4 /* background.mp3 */; };
+		C8B20D2417F7206000F56DB4 /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = C8B20D1F17F7206000F56DB4 /* Default-Portrait~ipad.png */; };
+		C8B20D2517F7206000F56DB4 /* hit.wav in Resources */ = {isa = PBXBuildFile; fileRef = C8B20D2017F7206000F56DB4 /* hit.wav */; };
+		C8B20D2617F7206000F56DB4 /* score.wav in Resources */ = {isa = PBXBuildFile; fileRef = C8B20D2117F7206000F56DB4 /* score.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -995,6 +1000,11 @@
 		C8B20D1617F71CB200F56DB4 /* BaseSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseSprite.h; sourceTree = "<group>"; };
 		C8B20D1717F71CB200F56DB4 /* PlayerSprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerSprite.cpp; sourceTree = "<group>"; };
 		C8B20D1817F71CB200F56DB4 /* PlayerSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerSprite.h; sourceTree = "<group>"; };
+		C8B20D1D17F7206000F56DB4 /* attack_ready.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = attack_ready.wav; path = Resources/attack_ready.wav; sourceTree = "<group>"; };
+		C8B20D1E17F7206000F56DB4 /* background.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = background.mp3; path = Resources/background.mp3; sourceTree = "<group>"; };
+		C8B20D1F17F7206000F56DB4 /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Portrait~ipad.png"; path = "Resources/Default-Portrait~ipad.png"; sourceTree = "<group>"; };
+		C8B20D2017F7206000F56DB4 /* hit.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = hit.wav; path = Resources/hit.wav; sourceTree = "<group>"; };
+		C8B20D2117F7206000F56DB4 /* score.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = score.wav; path = Resources/score.wav; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1067,6 +1077,11 @@
 		C8B208F717F6BF6600F56DB4 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C8B20D1D17F7206000F56DB4 /* attack_ready.wav */,
+				C8B20D1E17F7206000F56DB4 /* background.mp3 */,
+				C8B20D1F17F7206000F56DB4 /* Default-Portrait~ipad.png */,
+				C8B20D2017F7206000F56DB4 /* hit.wav */,
+				C8B20D2117F7206000F56DB4 /* score.wav */,
 				C8B20CCD17F7190A00F56DB4 /* sd */,
 				C8B208F817F6BF6600F56DB4 /* CloseNormal.png */,
 				C8B208FA17F6BF6600F56DB4 /* CloseSelected.png */,
@@ -2419,8 +2434,10 @@
 				C8B20CF217F71C8B00F56DB4 /* arrow_8.png in Resources */,
 				C8B2090117F6BF6600F56DB4 /* Icon-72.png in Resources */,
 				C8B208FF17F6BF6600F56DB4 /* HelloWorld.png in Resources */,
+				C8B20D2217F7206000F56DB4 /* attack_ready.wav in Resources */,
 				C8B20CF717F71C8B00F56DB4 /* jet.plist in Resources */,
 				C8B2090317F6BF6600F56DB4 /* Icon-Small-50.png in Resources */,
+				C8B20D2517F7206000F56DB4 /* hit.wav in Resources */,
 				C8B20CF317F71C8B00F56DB4 /* bar_inside.png in Resources */,
 				C8B20CFB17F71C8B00F56DB4 /* puck.png in Resources */,
 				C8B2090D17F6BF6600F56DB4 /* iTunesArtwork in Resources */,
@@ -2428,6 +2445,7 @@
 				C8B20CEF17F71C8B00F56DB4 /* arrow_5.png in Resources */,
 				C8B20CEB17F71C8B00F56DB4 /* arrow_1.png in Resources */,
 				C8B20CEE17F71C8B00F56DB4 /* arrow_4.png in Resources */,
+				C8B20D2317F7206000F56DB4 /* background.mp3 in Resources */,
 				C8B20CD617F71C7B00F56DB4 /* Code_Style in Resources */,
 				C8B20CFD17F71C8B00F56DB4 /* sprite_sheet.png in Resources */,
 				C8B208FD17F6BF6600F56DB4 /* Default.png in Resources */,
@@ -2437,7 +2455,9 @@
 				C8B2090B17F6BF6600F56DB4 /* Icon@2x.png in Resources */,
 				C8B20B2017F6BF6900F56DB4 /* project.pbxproj in Resources */,
 				C8B20CEC17F71C8B00F56DB4 /* arrow_2.png in Resources */,
+				C8B20D2617F7206000F56DB4 /* score.wav in Resources */,
 				C8B20CFE17F71C8B00F56DB4 /* sprite_sheet.tps in Resources */,
+				C8B20D2417F7206000F56DB4 /* Default-Portrait~ipad.png in Resources */,
 				C8B20CF917F71C8B00F56DB4 /* logo.png in Resources */,
 				C8B20CC117F6BF6B00F56DB4 /* blocks.png in Resources */,
 				C8B20CED17F71C8B00F56DB4 /* arrow_3.png in Resources */,
