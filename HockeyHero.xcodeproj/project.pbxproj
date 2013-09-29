@@ -333,6 +333,7 @@
 		C8B20D2417F7206000F56DB4 /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = C8B20D1F17F7206000F56DB4 /* Default-Portrait~ipad.png */; };
 		C8B20D2517F7206000F56DB4 /* hit.wav in Resources */ = {isa = PBXBuildFile; fileRef = C8B20D2017F7206000F56DB4 /* hit.wav */; };
 		C8B20D2617F7206000F56DB4 /* score.wav in Resources */ = {isa = PBXBuildFile; fileRef = C8B20D2117F7206000F56DB4 /* score.wav */; };
+		C8B20D2917F81F0C00F56DB4 /* GLES-Render.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8B20D2717F81F0C00F56DB4 /* GLES-Render.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1005,6 +1006,8 @@
 		C8B20D1F17F7206000F56DB4 /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Portrait~ipad.png"; path = "Resources/Default-Portrait~ipad.png"; sourceTree = "<group>"; };
 		C8B20D2017F7206000F56DB4 /* hit.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = hit.wav; path = Resources/hit.wav; sourceTree = "<group>"; };
 		C8B20D2117F7206000F56DB4 /* score.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = score.wav; path = Resources/score.wav; sourceTree = "<group>"; };
+		C8B20D2717F81F0C00F56DB4 /* GLES-Render.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "GLES-Render.cpp"; sourceTree = "<group>"; };
+		C8B20D2817F81F0C00F56DB4 /* GLES-Render.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GLES-Render.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2347,6 +2350,8 @@
 		C8B20CCF17F7191A00F56DB4 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				C8B20D2717F81F0C00F56DB4 /* GLES-Render.cpp */,
+				C8B20D2817F81F0C00F56DB4 /* GLES-Render.h */,
 				C8B20D0B17F71CA500F56DB4 /* CCShake.cpp */,
 				C8B20D0C17F71CA500F56DB4 /* CCShake.h */,
 				C8B20D0D17F71CA500F56DB4 /* SoundManager.cpp */,
@@ -2580,6 +2585,7 @@
 				C8B20B6117F6BF6900F56DB4 /* CCNodeLoader.cpp in Sources */,
 				C8B20BFF17F6BF6A00F56DB4 /* CCSkeletonAnimation.cpp in Sources */,
 				C8B2091C17F6BF6600F56DB4 /* CCAction.cpp in Sources */,
+				C8B20D2917F81F0C00F56DB4 /* GLES-Render.cpp in Sources */,
 				C8B20D1B17F71CB200F56DB4 /* BaseSprite.cpp in Sources */,
 				C8B20C1417F6BF6A00F56DB4 /* Skin.cpp in Sources */,
 				C8B20B6E17F6BF6900F56DB4 /* CCScrollViewLoader.cpp in Sources */,
