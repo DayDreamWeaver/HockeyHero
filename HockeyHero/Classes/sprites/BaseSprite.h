@@ -1,17 +1,27 @@
 //
-//  GameSprite.h
-//  Air Hockey
+//  BaseSprite.h
+//  HockeyHero
 //
 //  Created by hanks on 2013/08/21.
 //
 //
 
-#ifndef __Air_Hockey__GameSprite__
-#define __Air_Hockey__GameSprite__
+#ifndef __HockeyHero__BaseSprite__
+#define __HockeyHero__BaseSprite__
 
 #include "cocos2d.h"
+#include "Box2D.h"
+
+#define PTM_RATIO 32.0
+#define BALL_RADIUS 8.0
+
+class GameLayer;
 
 using namespace cocos2d;
+
+enum {
+    kSpriteBall
+};
 
 class BaseSprite : public CCSprite {
 protected:
@@ -19,37 +29,27 @@ protected:
     CCSize _screenSize;
 
 public:
-    // next position for the sprite
-    CC_SYNTHESIZE(CCPoint, _nextPositon, NextPosition);
-    // vector for sprite, used to present speed and direction
-    CC_SYNTHESIZE(CCPoint, _vector, Vector);
-    // touch on the sprite
-    CC_SYNTHESIZE(CCTouch *, _touch, Touch);
-    // rect region of sprite movement
-    CC_SYNTHESIZE(CCRect, _winRect, WinRect);
-    
-    BaseSprite(void);
+    BaseSprite(GameLayer * game, int type);
     // need to use virtual deconstruction in the base class
     virtual ~BaseSprite(void);
-
-    // directly create sprite with file
-    static BaseSprite* gameSpriteWithFile(const char *pszFilename);
-    // when using sprite sheet, create with frame name
-    static BaseSprite* gameSpriteWithFrameName(const char *pszFilename);
     
-    // override setPosition function
-    // to update _nextPostion when to set position
-    virtual void setPosition(const CCPoint &pos);
+    // box2d definition
+    CC_SYNTHESIZE(b2Body *, _body, Body);
+    CC_SYNTHESIZE(GameLayer *, _game, Game);
+    CC_SYNTHESIZE(int, _type, Type);
+
+    
     // get radius of sprite
     inline float getRadius() {
         return this->getTexture()->getContentSize().width * 0.5f;
     }
     // let sprite to control status of itself
     virtual void update(float dt);
-    // check basic move constraints with rect
-    virtual bool collisionWithSides(const CCRect &winRect, CCPoint &nextPosition, CCPoint &vector);
     // reset variables of sprite
     virtual void reset(void);
+    virtual void setSpritePosition (CCPoint position);
+    virtual void hide(void);
+    virtual float mag(void);
 };
 
-#endif /* defined(__Air_Hockey__GameSprite__) */
+#endif /* defined(__HockeyHero__GameSprite__) */

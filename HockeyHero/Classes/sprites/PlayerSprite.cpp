@@ -9,8 +9,9 @@
 #include "PlayerSprite.h"
 #include "../utils/SoundManager.h"
 
-PlayerSprite::PlayerSprite() {
-    this->arrow = ArrowSprite::create("arrow_8.png");
+PlayerSprite::PlayerSprite(GameLayer * game, int type, CCPoint position) : BaseSprite(game, type){
+    _startPosition = position;
+    _type = type;
     this->reset();
 }
 
@@ -18,13 +19,18 @@ PlayerSprite::~PlayerSprite() {
     
 }
 
-ArrowSprite* PlayerSprite::getArrow() {
-    return this->arrow;
+void PlayerSprite::initPlayer() {
+    this->_arrow = ArrowSprite::create("arrow_8.png");
 }
 
-PlayerSprite* PlayerSprite::create(const char *pszFileName) {
-    PlayerSprite *sprite = new PlayerSprite();
-    if (sprite && sprite->initWithFile(pszFileName)) {
+ArrowSprite* PlayerSprite::getArrow() {
+    return this->_arrow;
+}
+
+PlayerSprite* PlayerSprite::create(GameLayer * game, int type, CCPoint position) {
+    PlayerSprite *sprite = new PlayerSprite(game, type, position);
+    if (sprite) {
+        sprite->initPlayer();
         sprite->autorelease();
         return sprite;
     }
@@ -43,14 +49,7 @@ void PlayerSprite::update(float dt) {
         void
      */
     
-    CCPoint nextPosition = this->getNextPosition();
-    CCPoint currentVector = this->getVector();
-    this->collisionWithSides(this->getWinRect(), nextPosition, currentVector);
     
-    // udpate position of player
-    this->setNextPosition(nextPosition);
-    this->setVector(currentVector);
-    this->setPosition(this->getNextPosition());
     
     // update arrow
     this->transferArrow();
@@ -66,34 +65,20 @@ void PlayerSprite::doSpringEffect(cocos2d::CCPoint start, cocos2d::CCPoint end) 
     this->runAction(CCSequence::create(actionTo, actionBack, NULL));
 }
 
-bool PlayerSprite::collisionWithSides(const CCRect &winRect, CCPoint &nextPosition, CCPoint &currentVector) {
-    bool isCollision = false;
-    if (nextPosition.x < this->getRadius()) {
-        nextPosition.x = this->getRadius();
-        isCollision = true;
-    }
-    
-    if (nextPosition.x > _screenSize.width - this->getRadius()) {
-        nextPosition.x = _screenSize.width - this->getRadius();
-        isCollision = true;
-    }
-    return isCollision;
-}
-
 void PlayerSprite::transferArrow() {
     CCPoint start = this->getAttackPoint();
     CCPoint end = this->getPosition();
     // adjust scale
-    if (arrow->isVisible()) {
+    if (_arrow->isVisible()) {
         float distance = ccpDistance(start, end);
-        CCSize size = arrow->boundingBox().size;
+        CCSize size = _arrow->boundingBox().size;
         float scale = 0;
         
         if (distance > 0) {
             scale = distance / _screenSize.height / 2 * MAX_SCALE;
         }
         
-        arrow->setScaleX(scale);
+        _arrow->setScaleX(scale);
         
         // adjust angle
         float diffx = end.x - start.x;
@@ -102,18 +87,17 @@ void PlayerSprite::transferArrow() {
         float radian = -atan2(diffy, diffx);
         float angle = CC_RADIANS_TO_DEGREES(radian);
         
-        arrow->setRotation(angle);
+        _arrow->setRotation(angle);
         
         // adjust position
-        arrow->setPosition(ccpMidpoint(start, end));
+        _arrow->setPosition(ccpMidpoint(start, end));
     }
 
 }
 
 void PlayerSprite::reset() {
-    this->setPosition(this->getStartPoint());
-    this->setTouch(NULL);
-    this->arrow->setVisible(false);
-    this->arrow->setPosition(this->getStartPoint());
+    this->setPosition(_startPosition);
+    this->_arrow->setVisible(false);
+    this->_arrow->setPosition(_startPosition);
 }
 

@@ -6,8 +6,8 @@
 //
 //
 
-#ifndef __Air_Hockey__PlayerSprite__
-#define __Air_Hockey__PlayerSprite__
+#ifndef __HockeyHero__PlayerSprite__
+#define __HockeyHero__PlayerSprite__
 
 #include "cocos2d.h"
 #include "BaseSprite.h"
@@ -24,20 +24,20 @@ enum {
 
 class PlayerSprite : public BaseSprite {
 private:
-    ArrowSprite *arrow;
+    ArrowSprite *_arrow;
+    CCPoint _startPosition;
 public:
     CC_SYNTHESIZE(CCPoint, _attackPoint, AttackPoint);
-    CC_SYNTHESIZE(int, _playerIndex, PlayerIndex);
-    CC_SYNTHESIZE(CCPoint, _startPoint, StartPoint);
+    
     ArrowSprite* getArrow(void);
-    PlayerSprite(void);
+    PlayerSprite(GameLayer * game, int type, CCPoint position);
     ~PlayerSprite(void);
-    static PlayerSprite* create(const char *pszFileName);
+    static PlayerSprite* create(GameLayer * game, int type, CCPoint position);
     void update(float dt);
-    bool collisionWithSides(const CCRect &winRect, CCPoint &nextPosition, CCPoint &currentVector);
     void reset();
     void transferArrow();
     void doSpringEffect(cocos2d::CCPoint start, cocos2d::CCPoint end);
+    void initPlayer();
 };
 
-#endif /* defined(__Air_Hockey__PlayerSprite__) */
+#endif /* defined(__HockeyHero__PlayerSprite__) */

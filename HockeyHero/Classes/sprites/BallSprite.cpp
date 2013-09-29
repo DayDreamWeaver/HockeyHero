@@ -1,6 +1,6 @@
 //
 //  BallSprite.cpp
-//  Air_Hockey
+//  HockeyHero
 //
 //  Created by hanks on 2013/09/07.
 //
@@ -10,8 +10,10 @@
 #include "../utils/SoundManager.h"
 #include "../utils/CCShake.h"
 
-BallSprite::BallSprite() {
-    _jet = CCParticleSystemQuad::create("cool.plist");
+BallSprite::BallSprite(GameLayer * game, int type, CCPoint position) : BaseSprite(game, type) {
+    _type= type;
+    _startPosition = position;
+    
     this->reset();
 }
 
@@ -19,7 +21,7 @@ BallSprite::~BallSprite() {
     
 }
 
-BallSprite* BallSprite::create(const char* pszFileName) {
+BallSprite* BallSprite::create(GameLayer * game, int type, CCPoint position) {
     /*
      Create sprite with image file name.
      
@@ -29,8 +31,9 @@ BallSprite* BallSprite::create(const char* pszFileName) {
      Returns:
        BallSprite *
      */
-    BallSprite *sprite = new BallSprite();
-    if (sprite && sprite->initWithFile(pszFileName)) {
+    BallSprite *sprite = new BallSprite(game, type, position);
+    if (sprite) {
+        sprite->initBall();
         sprite->autorelease();
         return sprite;
     }
@@ -38,78 +41,48 @@ BallSprite* BallSprite::create(const char* pszFileName) {
     return NULL;
 }
 
-bool BallSprite::collisionWithSides(const CCRect &winRect, CCPoint &nextPosition, CCPoint &currentVector) {
-    /*
-     Make sure sprite is in the window, when positon of sprite
-     is out of winSize, get it back to winSize
-     
-     Args:
-     winSize: CCSize, available move space
-     nextPoint: CCPoint ref, next position of sprite
-     currentVector: CCPoint ref, current vector of sprite
-     
-     Return:
-     bool
-     */
-    bool isCollsion = false;
+void BallSprite::initBall() {
+    _jet = CCParticleSystemQuad::create("cool.plist");
     
-    float radius = this->getRadius();
-    CCPoint rectStartPoint = winRect.origin;
-    CCSize rectSize = winRect.size;
+    // create box2d body
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
     
-    // if x is out of rect
-    if (nextPosition.x < radius) {
-        nextPosition.x = radius;
-        currentVector.x *= REBOUND_RATIO;
-        isCollsion = true;
-    }
+    _body = _game->getWorld()->CreateBody(&bodyDef);
+    _body->SetSleepingAllowed(true);
+    _body->SetLinearDamping(1.2);
+    _body->SetAngularDamping(0.8);
     
-    if (nextPosition.x > rectSize.width - radius) {
-        nextPosition.x = rectSize.width - radius;
-        currentVector.x *= REBOUND_RATIO;
-        isCollsion = true;
-    }
+    // create circle shape
+    b2CircleShape circle;
+    circle.m_radius = BALL_RADIUS / PTM_RATIO;
     
-    // if y is out of rect
-    if (nextPosition.y < radius) {
-        nextPosition.y = radius;
-        currentVector.y *= REBOUND_RATIO;
-        isCollsion = true;
-    }
+    // define fixture
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &circle;
+    fixtureDef.density = 5;
+    fixtureDef.restitution = 0.7;
     
-    if (nextPosition.y > rectStartPoint.y + rectSize.height - radius) {
-        nextPosition.y = rectStartPoint.y + rectSize.height - radius;
-        currentVector.y *= REBOUND_RATIO;
-        isCollsion = true;
-    }
+    // add collision filter so only ball can be hit by player
+    fixtureDef.filter.categoryBits = 0x0010;
     
-    return isCollsion;
+    // set sprite texture
+    this->initWithFile("puck.png");
+    
+    _body->CreateFixture(&fixtureDef);
+    _body->SetUserData(this);
+    
+    setSpritePosition(_startPosition);
 }
-
 
 void BallSprite::update(float dt) {
     /*
      Update ball sprite status
      */
-    CCPoint nextPosition = this->getNextPosition();
-    CCPoint currentVector = this->getVector();
-    
-    // vector become slower according with time
-    currentVector = ccpMult(currentVector, WEAK_RATIO);
-    
-    // update next position of sprite
-    nextPosition.x += currentVector.x;
-    nextPosition.y += currentVector.y;
-
-    // check collision with bound of screen
-    if (this->collisionWithSides(this->getWinRect(), nextPosition, currentVector)) {
-        SoundManager::playSE(HIT_SE);
+    if (_body && isVisible()) {
+        this->setPositionX(_body->GetPosition().x * PTM_RATIO);
+        this->setPositionY(_body->GetPosition().y * PTM_RATIO);
     }
-    
-    // update position, nextPosition and vector 
-    this->setNextPosition(nextPosition);
-    this->setVector(currentVector);
-    this->setPosition(this->getNextPosition());
     
     // update jet partical position
     if (!this->_jet->isActive()) {
@@ -119,68 +92,21 @@ void BallSprite::update(float dt) {
     this->_jet->setPosition(this->getPosition());
 }
 
-bool BallSprite::collisionWithPlayer(BaseSprite *player, CCPoint &nextPosition, CCPoint &currentVector) {
-    /*
-     Logic process for collision with player sprite
-     
-     Args:
-       player: base sprite pointer.
-     
-     Returns:
-       void
-     */
-    bool isCollision = false;
-    CCPoint playerNextPosition = player->getNextPosition();
-    CCPoint playerVector = player->getVector();
-    
-    float diffx1 = nextPosition.x - player->getPositionX();
-    float diffy1 = nextPosition.y - player->getPositionY();
-    float distance1 = pow(diffx1, 2) + pow(diffy1, 2);
-    
-    float diffx2 = this->getPosition().x - player->getNextPosition().x;
-    float diffy2 = this->getPosition().y - player->getNextPosition().y;
-    float distance2 = pow(diffx2, 2) + pow(diffy2, 2);
-                       
-    float shortestCollisionDistance = pow(this->getRadius(), 2) + pow(player->getRadius(), 2);
-
-    if (distance1 <= shortestCollisionDistance || distance2 <= shortestCollisionDistance) {
-        float magtitudeBallVector = pow(currentVector.x, 2) + pow(currentVector.y , 2);
-        float magtitudePlayerVector = pow(playerVector.x, 2) + pow(playerVector.y, 2);
-        
-        float force = sqrt(magtitudeBallVector + magtitudePlayerVector);
-        float angle = atan2(diffx1, diffy1);
-        
-        // control ball speed
-        if (force >= MAX_BALL_SPEED) {
-            force = MAX_BALL_SPEED;
-        } else if (force <= MIN_BALL_SPEED) {
-            force = MIN_BALL_SPEED;
-        }
-        
-        currentVector.x = force * cos(angle);
-        currentVector.y = force * sin(angle);
-        
-        nextPosition.x = playerNextPosition.x + (player->getRadius() + this->getRadius() + force) * cos(angle);
-        nextPosition.y = playerNextPosition.y + (player->getRadius() + this->getRadius() + force) * sin(angle);
-        
-        SoundManager::playSE(HIT_SE);
-        
-        // update ball positionssre
-        this->setNextPosition(nextPosition);
-        this->setVector(currentVector);
-        isCollision = true;
-    }
-    
-    return isCollision;
-}
 
 CCParticleSystem * BallSprite::getParticle() {
     return this->_jet;
 }
 
 void BallSprite::reset() {
-    this->setVector(ccp(0, 0));
-    this->_jet->setPosition(this->getPosition());
-    this->_jet->setAngle(270);
-    this->_jet->stopSystem();
+    _jet->setPosition(this->getPosition());
+    _jet->setAngle(270);
+    _jet->stopSystem();
+    
+    if (_body) {
+        _body->SetLinearVelocity(b2Vec2_zero);
+        _body->SetAngularVelocity(0);
+        _body->SetAwake(true);
+    }
+    setSpritePosition(_startPosition);
+    setVisible(true);
 }

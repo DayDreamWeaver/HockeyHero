@@ -1,35 +1,30 @@
 //
 //  BallSprite.h
-//  Air_Hockey
+//  HockeyHero
 //
 //  Created by hanks on 2013/09/07.
 //
 //
 
-#ifndef __Air_Hockey__BallSprite__
-#define __Air_Hockey__BallSprite__
+#ifndef __HockeyHero__BallSprite__
+#define __HockeyHero__BallSprite__
 
 #include "BaseSprite.h"
 
 using namespace cocos2d;
 
-#define WEAK_RATIO 0.99f
-#define REBOUND_RATIO -0.8f
-#define MAX_BALL_SPEED 15
-#define MIN_BALL_SPEED 5
-
 class BallSprite : public BaseSprite {
 protected:
     CCParticleSystem * _jet;
+    CCPoint _startPosition;
 public:
-    BallSprite(void);
+    BallSprite(GameLayer * game, int type, CCPoint position);
     ~BallSprite(void);
-    static BallSprite* create(const char *pszFileName);
-    bool collisionWithPlayer(BaseSprite* player, CCPoint &nextPosition, CCPoint &currentVector);
+    static BallSprite* create(GameLayer * game, int type, CCPoint position);
     void update(float dt);
-    bool collisionWithSides(const CCRect &winRect, CCPoint &nextPosition, CCPoint &currentVector);
     void reset(void);
     CCParticleSystem * getParticle();
+    void initBall();
 };
 
-#endif /* defined(__Air_Hockey__BallSprite__) */
+#endif /* defined(__HockeyHero__BallSprite__) */

@@ -50,6 +50,9 @@ class GameLayer : public cocos2d::CCLayer
     int _player2Score;
     
     int _attackRangeDegree;
+    
+    b2World* world;
+    cocos2d::CCTexture2D* m_pSpriteTexture; // weak ref
 
     void updatePlayerScore(int player);
     
@@ -85,6 +88,8 @@ public:
     void update(float dt);
     virtual void draw();
     void reset(void);
+    
+    void initPhysics();
     
 };
 
