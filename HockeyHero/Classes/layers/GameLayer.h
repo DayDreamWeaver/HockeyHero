@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "../sprites/BallSprite.h"
 #include "../sprites/PlayerSprite.h"
+#include "GLES-Render.h"
 
 using namespace cocos2d;
 
@@ -30,7 +31,7 @@ enum {
 
 class GameLayer : public cocos2d::CCLayer
 {
-
+private:
     // player object
     PlayerSprite * _player1;
     PlayerSprite * _player2;
@@ -38,7 +39,7 @@ class GameLayer : public cocos2d::CCLayer
     // ball object
     BallSprite * _ball;
     
-    BaseSprite * _court;
+    CCSprite * _court;
     
     CCArray * _players;
     CCLabelTTF * _player1ScoreLabel;
@@ -50,9 +51,19 @@ class GameLayer : public cocos2d::CCLayer
     int _player2Score;
     
     int _attackRangeDegree;
+    bool _running;
+    // box2d
+    GLESDebugDraw * m_debugDraw;
+    b2ContactListener * _collisionListener;
     
-    b2World* world;
-    cocos2d::CCTexture2D* m_pSpriteTexture; // weak ref
+    CCTouch * _touch;
+
+
+    
+public:
+    ~GameLayer();
+    
+    CC_SYNTHESIZE(b2World *, _world, World);
 
     void updatePlayerScore(int player);
     
@@ -64,9 +75,6 @@ class GameLayer : public cocos2d::CCLayer
     double getAcuteAngleOfAttack(CCPoint attack, CCPoint tap);
     // draw two lines show the attack angle range
     void drawAngleCheckLine();
-public:
-
-    ~GameLayer();
     
     // Method 'init' in cocos2d-x returns bool, instead of 'id' in cocos2d-iphone (an object pointer)
     virtual bool init();

@@ -16,7 +16,7 @@ using namespace cocos2d;
 
 class LogoLayer : public cocos2d::CCLayer {
 
-    BaseSprite *_logo;
+    CCSprite *_logo;
     CCProgressTimer *_progressBar;
     CCLabelTTF * _barPercentage;
     

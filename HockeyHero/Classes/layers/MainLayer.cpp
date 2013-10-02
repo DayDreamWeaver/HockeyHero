@@ -32,7 +32,7 @@ bool MainLayer::init() {
     _isStartMainGame = false;
     
     // logo
-    _logo = BaseSprite::gameSpriteWithFile("logo.png");
+    _logo = CCSprite::create("logo.png");
     _logo->setPosition(ccp(_screenSize.width * 0.5, _screenSize.height * 0.5));
     this->addChild(_logo);
     // listen to touch

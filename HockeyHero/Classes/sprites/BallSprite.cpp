@@ -9,6 +9,7 @@
 #include "BallSprite.h"
 #include "../utils/SoundManager.h"
 #include "../utils/CCShake.h"
+#include "../layers/GameLayer.h"
 
 BallSprite::BallSprite(GameLayer * game, int type, CCPoint position) : BaseSprite(game, type) {
     _type= type;

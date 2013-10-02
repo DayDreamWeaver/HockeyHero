@@ -25,9 +25,9 @@ enum {
 class PlayerSprite : public BaseSprite {
 private:
     ArrowSprite *_arrow;
-    CCPoint _startPosition;
 public:
     CC_SYNTHESIZE(CCPoint, _attackPoint, AttackPoint);
+    CC_SYNTHESIZE(CCPoint, _startPosition, StartPoint);
     
     ArrowSprite* getArrow(void);
     PlayerSprite(GameLayer * game, int type, CCPoint position);

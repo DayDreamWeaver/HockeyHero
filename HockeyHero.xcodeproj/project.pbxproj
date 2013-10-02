@@ -334,6 +334,7 @@
 		C8B20D2517F7206000F56DB4 /* hit.wav in Resources */ = {isa = PBXBuildFile; fileRef = C8B20D2017F7206000F56DB4 /* hit.wav */; };
 		C8B20D2617F7206000F56DB4 /* score.wav in Resources */ = {isa = PBXBuildFile; fileRef = C8B20D2117F7206000F56DB4 /* score.wav */; };
 		C8B20D2917F81F0C00F56DB4 /* GLES-Render.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8B20D2717F81F0C00F56DB4 /* GLES-Render.cpp */; };
+		C8B20D2C17F9B95800F56DB4 /* CollisionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8B20D2A17F9B95800F56DB4 /* CollisionListener.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1008,6 +1009,8 @@
 		C8B20D2117F7206000F56DB4 /* score.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = score.wav; path = Resources/score.wav; sourceTree = "<group>"; };
 		C8B20D2717F81F0C00F56DB4 /* GLES-Render.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "GLES-Render.cpp"; sourceTree = "<group>"; };
 		C8B20D2817F81F0C00F56DB4 /* GLES-Render.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GLES-Render.h"; sourceTree = "<group>"; };
+		C8B20D2A17F9B95800F56DB4 /* CollisionListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionListener.cpp; sourceTree = "<group>"; };
+		C8B20D2B17F9B95800F56DB4 /* CollisionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollisionListener.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2356,6 +2359,8 @@
 				C8B20D0C17F71CA500F56DB4 /* CCShake.h */,
 				C8B20D0D17F71CA500F56DB4 /* SoundManager.cpp */,
 				C8B20D0E17F71CA500F56DB4 /* SoundManager.h */,
+				C8B20D2A17F9B95800F56DB4 /* CollisionListener.cpp */,
+				C8B20D2B17F9B95800F56DB4 /* CollisionListener.h */,
 			);
 			name = utils;
 			path = Classes/utils;
@@ -2498,6 +2503,7 @@
 				C8B20AED17F6BF6900F56DB4 /* CCParallaxNode.cpp in Sources */,
 				C8B2095A17F6BF6600F56DB4 /* CCAffineTransform.cpp in Sources */,
 				C8B2091517F6BF6600F56DB4 /* RootViewController.mm in Sources */,
+				C8B20D2C17F9B95800F56DB4 /* CollisionListener.cpp in Sources */,
 				C8B20A9C17F6BF6800F56DB4 /* CCNotificationCenter.cpp in Sources */,
 				C8B20ACB17F6BF6800F56DB4 /* ioapi.cpp in Sources */,
 				C8B20B3617F6BF6900F56DB4 /* CCBSequence.cpp in Sources */,

@@ -1,6 +1,6 @@
 //
 //  PlayerSprite.cpp
-//  Air_Hockey
+//  HockeyHero
 //
 //  Created by hanks on 2013/09/07.
 //
@@ -8,6 +8,7 @@
 
 #include "PlayerSprite.h"
 #include "../utils/SoundManager.h"
+#include "../layers/GameLayer.h"
 
 PlayerSprite::PlayerSprite(GameLayer * game, int type, CCPoint position) : BaseSprite(game, type){
     _startPosition = position;
@@ -21,6 +22,35 @@ PlayerSprite::~PlayerSprite() {
 
 void PlayerSprite::initPlayer() {
     this->_arrow = ArrowSprite::create("arrow_8.png");
+    
+    // create body
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    
+    _body = _game->getWorld()->CreateBody(&bodyDef);
+    _body->SetSleepingAllowed(true);
+    _body->SetLinearDamping(8);
+    _body->SetAngularDamping(5);
+    
+    // Define shape
+    b2CircleShape circle;
+    circle.m_radius = BALL_RADIUS/PTM_RATIO;
+    
+    //define fixture
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &circle;
+    fixtureDef.density = 5;
+    fixtureDef.restitution = 0.7;
+    
+    fixtureDef.filter.categoryBits = 0x0100;
+    
+    this->initWithFile("mallet");
+    
+    _body->CreateFixture(&fixtureDef);
+    _body->SetUserData(this);
+    
+    setSpritePosition(_startPosition);
+
 }
 
 ArrowSprite* PlayerSprite::getArrow() {
@@ -48,8 +78,10 @@ void PlayerSprite::update(float dt) {
       Returns:
         void
      */
-    
-    
+    if (_body && isVisible()) {
+        setPositionX(_body->GetPosition().x * PTM_RATIO);
+        setPositionY(_body->GetPosition().y * PTM_RATIO);
+    }
     
     // update arrow
     this->transferArrow();

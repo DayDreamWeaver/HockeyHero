@@ -16,7 +16,7 @@ using namespace cocos2d;
 
 class MainLayer : public cocos2d::CCLayer {
     
-    BaseSprite *_logo;
+    CCSprite *_logo;
     CCSize _screenSize;
     bool _isStartMainGame;
 public:

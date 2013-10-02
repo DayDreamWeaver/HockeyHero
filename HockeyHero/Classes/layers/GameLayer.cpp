@@ -1,8 +1,7 @@
 #include "GameLayer.h"
 #include "../utils/SoundManager.h"
 #include "../utils/CCShake.h"
-#include "../sprites/PlayerSprite.h"
-#include "../sprites/BallSprite.h"
+#include "../utils/CollisionListener.h"
 #include "AppDelegate.h"
 
 using namespace cocos2d;
@@ -53,32 +52,30 @@ bool GameLayer::init()
     // player background
     SoundManager::playBGM();
     
+    // init physics
+    this->initPhysics();
+    
     _player1Score = 0;
     _player2Score = 0;
     _screenSize = CCDirector::sharedDirector()->getWinSize();
     
-    _court = BaseSprite::gameSpriteWithFile("court.png");
+    _court = CCSprite::create("court.png");
     _court->setPosition(ccp(_screenSize.width * 0.5, _screenSize.height * 0.5));
     // set Z value to -1, to set background to the bottom
     _court->setZOrder(-1);
     this->addChild(_court);
     
+    CCPoint startPoint = ccp(_screenSize.width * 0.5, _screenSize.height / 4);
+
     // create player sprite
-    _player1 = PlayerSprite::create("mallet.png");
-    _player1->setStartPoint(ccp(_screenSize.width * 0.5, _screenSize.height / 4));
-    _player1->setPosition(_player1->getStartPoint());
-    _player1->setWinRect(CCRect(0, 0, DESIGN_RESOLUTION_WIDTH, _player1->getStartPoint().y));
+    _player1 = PlayerSprite::create(this, P1, startPoint);
     _player1->setAttackPoint(_player1->getStartPoint());
-    _player1->setPlayerIndex(P1);
     this->addChild(_player1->getArrow());
     this->addChild(_player1);
     
-    _player2 = PlayerSprite::create("mallet.png");
-    _player2->setStartPoint(ccp(_screenSize.width * 0.5, _screenSize.height - _screenSize.height / 4));
-    _player2->setPosition(_player2->getStartPoint());
-    _player2->setWinRect(CCRect(0, _player2->getStartPoint().y, DESIGN_RESOLUTION_WIDTH, _player1->getStartPoint().y));
+    startPoint = ccp(_screenSize.width * 0.5, _screenSize.height - _screenSize.height / 4);
+    _player2 = PlayerSprite::create(this, P2, startPoint);
     _player2->setAttackPoint(_player2->getStartPoint());
-    _player2->setPlayerIndex(P2);
     this->addChild(_player2->getArrow());
     this->addChild(_player2);
     
@@ -89,10 +86,8 @@ bool GameLayer::init()
     ////////////////////////
     // init ball sprite //
     ////////////////////////
-    _ball = BallSprite::create("puck.png");
-    _ball->setPosition(ccp(_screenSize.width * 0.5, _screenSize.height * 0.5 - 2 * _ball->getRadius()));
-    CCRect ballWinRect = CCRect(0, 0, DESIGN_RESOLUTION_WIDTH, DESIGN_RESOLUTION_HEIGHT);
-    _ball->setWinRect(ballWinRect);
+    startPoint = ccp(_screenSize.width * 0.5, _screenSize.height * 0.5 - 2 * _ball->getRadius());
+    _ball = BallSprite::create(this, kSpriteBall, startPoint);
     this->addChild(this->_ball->getParticle());
     this->addChild(_ball);
     
@@ -111,7 +106,7 @@ bool GameLayer::init()
     
     // listen to touch
     this->setTouchEnabled(true);
-    this->schedule(schedule_selector(BaseSprite::update));
+    this->schedule(schedule_selector(GameLayer::update));
     
     return true;
 }
@@ -129,6 +124,15 @@ void GameLayer::draw() {
     
     drawLine(ccp(0, _player1->getStartPoint().y), ccp(_screenSize.width, _player1->getStartPoint().y), RED, blod_value_1);
     drawLine(ccp(0, _player2->getStartPoint().y), ccp(_screenSize.width, _player2->getStartPoint().y), RED, blod_value_2);
+    
+    // box2d debug mode
+    ccGLEnableVertexAttribs( kCCVertexAttribFlag_Position );
+    
+    kmGLPushMatrix();
+    
+    _world->DrawDebugData();
+    
+    kmGLPopMatrix();
     
 }
 
@@ -165,36 +169,58 @@ void GameLayer::drawAngleCheckLine() {
 
 void GameLayer::update(float dt) {
     // update player's position
-    BaseSprite * player;
-    CCPoint ballNextPosition = _ball->getNextPosition();
-    CCPoint ballCurrentPosition = _ball->getVector();
-    // simple collision detect
-    for (int p = 0; p < _players->count(); p++) {
-        player = (BaseSprite *)_players->objectAtIndex(p);
-        bool isCollision = _ball->collisionWithPlayer(player, ballNextPosition, ballCurrentPosition);
-        if (isCollision) {
-            this->runAction(CCShake::create(0.5f, 10));
-        }
-    }
+    
     
     _ball->update(dt);
     
     // check for goals
-    if (ballNextPosition.y < _ball->getRadius() * 2) {
-        this->updatePlayerScore(2);
-        this->reset();
-        return ;
-    } else if (ballNextPosition.y > _screenSize.height + _ball->getRadius() * 2) {
-        this->updatePlayerScore(1);
-        this->reset();
-        return ;
-    }
     
-    for (int p = 0; p < _players->count(); p++) {
-        player->update(dt);
-        player = (BaseSprite *)_players->objectAtIndex(p);
-        player->setPosition(player->getNextPosition());
-    }
+    
+}
+
+void GameLayer::initPhysics() {
+    b2Vec2 gravity;
+    gravity.Set(0.0f, 0.0f);
+    _world = new b2World(gravity);
+
+    _world->SetAllowSleeping(true);
+    _world->SetContinuousPhysics(true);
+    _collisionListener = new CollisionListener();
+    _world->SetContactListener(_collisionListener);
+    
+    m_debugDraw = new GLESDebugDraw(PTM_RATIO);
+    _world->SetDebugDraw(m_debugDraw);
+                         
+    uint32 flags = 0;
+    flags += b2Draw::e_shapeBit;
+    m_debugDraw->SetFlags(flags);
+    
+    b2FixtureDef fixtureDef;
+    b2BodyDef bodyDef;
+    
+    // create edges
+    b2BodyDef courtBodyDef;
+    courtBodyDef.position.Set(0, 0);
+    b2Body *courtBody = _world->CreateBody(&courtBodyDef);
+    
+    // define edges
+    b2EdgeShape courtBox;
+    
+    // bottom
+    courtBox.Set(b2Vec2(0, 0), b2Vec2(_screenSize.width / PTM_RATIO, 0));
+    courtBody->CreateFixture(&courtBox, 0);
+    
+    // top
+    courtBox.Set(b2Vec2(0, _screenSize.height / PTM_RATIO), b2Vec2(_screenSize.width / PTM_RATIO, _screenSize.height / PTM_RATIO));
+    courtBody->CreateFixture(&courtBox, 0);
+    
+    // left
+    courtBox.Set(b2Vec2(0, 0), b2Vec2(0, _screenSize.height / PTM_RATIO));
+    courtBody->CreateFixture(&courtBox, 0);
+    
+    // right
+    courtBox.Set(b2Vec2(_screenSize.width / PTM_RATIO, 0), b2Vec2(_screenSize.width / PTM_RATIO, _screenSize.height / PTM_RATIO));
+    courtBody->CreateFixture(&courtBox, 0);
 }
 
 int GameLayer::getGestureDicrection(cocos2d::CCPoint start, cocos2d::CCPoint end, int playerIndex) {
@@ -252,12 +278,12 @@ void GameLayer::updatePlayerScore(int player) {
         _player1Score++;
         sprintf(score_buffer, "%i", _player1Score);
         _player1ScoreLabel->setString(score_buffer);
-        _ball->setNextPosition(ccp(_screenSize.width * 0.5, _screenSize.height * 0.5 + 2 * _ball->getRadius()));
+        _ball->setPosition(ccp(_screenSize.width * 0.5, _screenSize.height * 0.5 + 2 * _ball->getRadius()));
     } else {
         _player2Score++;
         sprintf(score_buffer, "%i", _player2Score);
         _player2ScoreLabel->setString(score_buffer);
-        _ball->setNextPosition(ccp(_screenSize.width * 0.5, _screenSize.height * 0.5 - 2 * _ball->getRadius()));
+        _ball->setPosition(ccp(_screenSize.width * 0.5, _screenSize.height * 0.5 - 2 * _ball->getRadius()));
     }
 }
 
@@ -282,7 +308,7 @@ void GameLayer::ccTouchesBegan(CCSet* pTouches, CCEvent* event) {
                 player = (BaseSprite *)_players->objectAtIndex(p);
                 // if touch on player, set touch object onto player
                 if (player->boundingBox().containsPoint(tap)) {
-                    player->setTouch(touch);
+                    //player->setTouch(touch);
                 }
             }
         }
@@ -303,42 +329,38 @@ void GameLayer::ccTouchesMoved(CCSet* pTouches, CCEvent* event) {
             for (int p = 0; p < _players->count(); p++) {
                 player = (PlayerSprite *)_players->objectAtIndex(p);
                 // if player contains a touch
-                if (player->getTouch() != NULL && player->getTouch() == touch) {
-                    CCPoint nextPosition = tap;
-                    switch (player->getPlayerIndex()) {
-                        case P1:
-                            direction = this->getGestureDicrection(ccp(player->getStartPoint().x, player->getStartPoint().y - _ball->getRadius()), tap, player->getPlayerIndex());
-                            break;
-                        case P2:
-                            direction = this->getGestureDicrection(ccp(player->getStartPoint().x, player->getStartPoint().y + _ball->getRadius()), tap, player->getPlayerIndex());
-                            break;
-                    }
-                                        // if touch is out of court, push it back
-                    player->collisionWithSides(player->getWinRect(), nextPosition, nextPosition);
-                    
-                    // update player 1's position Y
-                    switch (direction) {
-                        case UP:
-                            nextPosition.y = player->getStartPoint().y;
-                            player->getArrow()->setVisible(false);
-                            // update attack start position
-                            player->setAttackPoint(player->getPosition());
-                            printf("UP\n");
-                            break;
-                        case DOWN:
-                            player->getArrow()->setVisible(true);
-                            printf("DOWN\n");
-                            break;
-                        default:
-                            break;
-                    }
+//                if (player) {
+//                    CCPoint nextPosition = tap;
+//                    switch (player->getType()) {
+//                        case P1:
+//                            direction = this->getGestureDicrection(ccp(player->getStartPoint().x, player->getStartPoint().y - _ball->getRadius()), tap, player->getType());
+//                            break;
+//                        case P2:
+//                            direction = this->getGestureDicrection(ccp(player->getStartPoint().x, player->getStartPoint().y + _ball->getRadius()), tap, player->getType());
+//                            break;
+//                    }
+//                    
+//                    // update player 1's position Y
+//                    switch (direction) {
+//                        case UP:
+//                            nextPosition.y = player->getStartPoint().y;
+//                            player->getArrow()->setVisible(false);
+//                            // update attack start position
+//                            player->setAttackPoint(player->getPosition());
+//                            printf("UP\n");
+//                            break;
+//                        case DOWN:
+//                            player->getArrow()->setVisible(true);
+//                            printf("DOWN\n");
+//                            break;
+//                        default:
+//                            break;
+//                    }
 
                     
                     // update position and vector to player
-                    player->setNextPosition(nextPosition);
-                    player->setVector(ccp(tap.x - player->getPositionX(), tap.y - player->getPositionY()));
-                    player->setPosition(player->getNextPosition());
-                }
+                    
+//                }
             }
         }
     }
@@ -359,15 +381,15 @@ void GameLayer::ccTouchesEnded(CCSet* pTouches, CCEvent* event) {
             for (int p = 0; p < _players->count(); p++) {
                 player = (PlayerSprite *)_players->objectAtIndex(p);
                 
-                if (player->getTouch() != NULL && player->getTouch() == touch) {
-                    player->setTouch(NULL);
-                    // need to keep its vector, because need to perform spring effect
-                        player->setPosition(player->getAttackPoint());
-                        // show spring effect
-                        if (player->getArrow()->isVisible()) {
-                            player->doSpringEffect(tap, player->getAttackPoint());
-                        }
-                    }
+//                if (player->getTouch() != NULL && player->getTouch() == touch) {
+//                    player->setTouch(NULL);
+//                    // need to keep its vector, because need to perform spring effect
+//                        player->setPosition(player->getAttackPoint());
+//                        // show spring effect
+//                        if (player->getArrow()->isVisible()) {
+//                            player->doSpringEffect(tap, player->getAttackPoint());
+//                        }
+//                    }
             }
         }
     }
