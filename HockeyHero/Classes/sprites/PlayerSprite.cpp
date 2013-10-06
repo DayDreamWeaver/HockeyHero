@@ -34,7 +34,7 @@ void PlayerSprite::initPlayer() {
     
     // Define shape
     b2CircleShape circle;
-    circle.m_radius = BALL_RADIUS/PTM_RATIO;
+    circle.m_radius = 25/PTM_RATIO;
     
     //define fixture
     b2FixtureDef fixtureDef;
