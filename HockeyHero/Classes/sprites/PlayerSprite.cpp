@@ -11,8 +11,9 @@
 #include "../layers/GameLayer.h"
 
 PlayerSprite::PlayerSprite(GameLayer * game, int type, CCPoint position) : BaseSprite(game, type){
-    _startPosition = position;
-    _type = type;
+    this->_startPosition = position;
+    this->_arrow = ArrowSprite::create("arrow_8.png");
+    this->_type = type;
     this->reset();
 }
 
@@ -21,7 +22,6 @@ PlayerSprite::~PlayerSprite() {
 }
 
 void PlayerSprite::initPlayer() {
-    this->_arrow = ArrowSprite::create("arrow_8.png");
     
     // create body
     b2BodyDef bodyDef;
@@ -44,7 +44,7 @@ void PlayerSprite::initPlayer() {
     
     fixtureDef.filter.categoryBits = 0x0100;
     
-    this->initWithFile("mallet");
+    this->initWithFile("mallet.png");
     
     _body->CreateFixture(&fixtureDef);
     _body->SetUserData(this);

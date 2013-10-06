@@ -23,19 +23,8 @@ CCScene* GameLayer::scene()
 }
 
 // on "init" you need to initialize your instance
-bool GameLayer::init()
+GameLayer::GameLayer()
 {
-    //////////////////////////////
-    // 1. super init first
-    if ( !CCLayer::init() )
-    {
-        return false;
-    }
-
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
-
     // add a "close" icon to exit the progress. it's an autorelease object
     CCMenuItemImage *pCloseItem = CCMenuItemImage::create(
                                         "CloseNormal.png",
@@ -52,9 +41,6 @@ bool GameLayer::init()
     // player background
     SoundManager::playBGM();
     
-    // init physics
-    this->initPhysics();
-    
     _player1Score = 0;
     _player2Score = 0;
     _screenSize = CCDirector::sharedDirector()->getWinSize();
@@ -65,31 +51,8 @@ bool GameLayer::init()
     _court->setZOrder(-1);
     this->addChild(_court);
     
-    CCPoint startPoint = ccp(_screenSize.width * 0.5, _screenSize.height / 4);
-
-    // create player sprite
-    _player1 = PlayerSprite::create(this, P1, startPoint);
-    _player1->setAttackPoint(_player1->getStartPoint());
-    this->addChild(_player1->getArrow());
-    this->addChild(_player1);
-    
-    startPoint = ccp(_screenSize.width * 0.5, _screenSize.height - _screenSize.height / 4);
-    _player2 = PlayerSprite::create(this, P2, startPoint);
-    _player2->setAttackPoint(_player2->getStartPoint());
-    this->addChild(_player2->getArrow());
-    this->addChild(_player2);
-    
-    // keep player objects
-    _players = CCArray::create(_player1, _player2, NULL);
-    _players->retain();
-    
-    ////////////////////////
-    // init ball sprite //
-    ////////////////////////
-    startPoint = ccp(_screenSize.width * 0.5, _screenSize.height * 0.5 - 2 * _ball->getRadius());
-    _ball = BallSprite::create(this, kSpriteBall, startPoint);
-    this->addChild(this->_ball->getParticle());
-    this->addChild(_ball);
+    // init physics
+    this->initPhysics();
     
     // label
     _player1ScoreLabel = CCLabelTTF::create("0", "Arial", 60);
@@ -107,8 +70,6 @@ bool GameLayer::init()
     // listen to touch
     this->setTouchEnabled(true);
     this->schedule(schedule_selector(GameLayer::update));
-    
-    return true;
 }
 
 void GameLayer::draw() {
@@ -221,6 +182,32 @@ void GameLayer::initPhysics() {
     // right
     courtBox.Set(b2Vec2(_screenSize.width / PTM_RATIO, 0), b2Vec2(_screenSize.width / PTM_RATIO, _screenSize.height / PTM_RATIO));
     courtBody->CreateFixture(&courtBox, 0);
+    
+    // init sprite
+    CCPoint startPoint = ccp(_screenSize.width * 0.5, _screenSize.height / 4);
+    // create player sprite
+    _player1 = PlayerSprite::create(this, P1, startPoint);
+    _player1->setAttackPoint(_player1->getStartPoint());
+    this->addChild(_player1->getArrow());
+    this->addChild(_player1);
+    
+    startPoint = ccp(_screenSize.width * 0.5, _screenSize.height - _screenSize.height / 4);
+    _player2 = PlayerSprite::create(this, P2, startPoint);
+    _player2->setAttackPoint(_player2->getStartPoint());
+    this->addChild(_player2->getArrow());
+    this->addChild(_player2);
+    
+    // keep player objects
+    _players = CCArray::create(_player1, _player2, NULL);
+    _players->retain();
+    
+    ////////////////////////
+    // init ball sprite //
+    ////////////////////////
+    startPoint = ccp(_screenSize.width * 0.5, _screenSize.height * 0.5 - 20);
+    _ball = BallSprite::create(this, kSpriteBall, startPoint);
+    this->addChild(this->_ball->getParticle());
+    this->addChild(_ball);
 }
 
 int GameLayer::getGestureDicrection(cocos2d::CCPoint start, cocos2d::CCPoint end, int playerIndex) {
@@ -407,4 +394,9 @@ void GameLayer::menuCloseCallback(CCObject* pSender)
 
 GameLayer::~GameLayer() {
     CC_SAFE_RELEASE(_players);
+    delete _world;
+    _world = NULL;
+    
+    delete m_debugDraw;
+    delete _collisionListener;
 }

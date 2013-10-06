@@ -9,7 +9,9 @@
 #include "BaseSprite.h"
 
 BaseSprite::BaseSprite(GameLayer * game, int type) {
-    _screenSize = CCDirector::sharedDirector()->getWinSize();
+    this->_screenSize = CCDirector::sharedDirector()->getWinSize();
+    this->_game = game;
+    this->_type = type;
     this->reset();
 }
 

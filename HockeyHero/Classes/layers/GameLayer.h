@@ -61,6 +61,7 @@ private:
 
     
 public:
+    GameLayer();
     ~GameLayer();
     
     CC_SYNTHESIZE(b2World *, _world, World);
@@ -75,9 +76,6 @@ public:
     double getAcuteAngleOfAttack(CCPoint attack, CCPoint tap);
     // draw two lines show the attack angle range
     void drawAngleCheckLine();
-    
-    // Method 'init' in cocos2d-x returns bool, instead of 'id' in cocos2d-iphone (an object pointer)
-    virtual bool init();
 
     // there's no 'id' in cpp, so we recommend to return the class instance pointer
     static cocos2d::CCScene* scene();

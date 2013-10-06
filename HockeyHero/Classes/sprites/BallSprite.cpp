@@ -14,7 +14,6 @@
 BallSprite::BallSprite(GameLayer * game, int type, CCPoint position) : BaseSprite(game, type) {
     _type= type;
     _startPosition = position;
-    
     this->reset();
 }
 
@@ -99,10 +98,6 @@ CCParticleSystem * BallSprite::getParticle() {
 }
 
 void BallSprite::reset() {
-    _jet->setPosition(this->getPosition());
-    _jet->setAngle(270);
-    _jet->stopSystem();
-    
     if (_body) {
         _body->SetLinearVelocity(b2Vec2_zero);
         _body->SetAngularVelocity(0);
