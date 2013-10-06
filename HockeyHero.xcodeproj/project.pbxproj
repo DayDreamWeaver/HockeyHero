@@ -2844,8 +2844,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/ad-in/workspace/ios/HockeyHero/HockeyHero/libs/cocos2dx/platform/third_party/ios/libraries",
-					"/Users/ad-in/workspace/ios/HockeyHero/HockeyHero/libs/libwebsockets/ios/lib",
+					"\"$(PROJECT_NAME)/libs/cocos2dx/platform/third_party/ios/libraries\"",
+					"\"$(PROJECT_NAME)/libs/libwebsockets/ios/lib\"",
 				);
 				OTHER_LDFLAGS = (
 					"-lxml2",
