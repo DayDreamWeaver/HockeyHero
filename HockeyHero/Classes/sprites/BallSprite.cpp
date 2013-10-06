@@ -43,6 +43,9 @@ BallSprite* BallSprite::create(GameLayer * game, int type, CCPoint position) {
 
 void BallSprite::initBall() {
     _jet = CCParticleSystemQuad::create("cool.plist");
+    this->_jet->setPosition(this->getPosition());
+    this->_jet->setAngle(270);
+    this->_jet->stopSystem();
     
     // create box2d body
     b2BodyDef bodyDef;
